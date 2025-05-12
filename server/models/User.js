@@ -1,26 +1,31 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     firstName: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     secondName: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     profileImg: {
-        type: String,
-        default: 'default-profile.png'
+      type: String,
+      default: 'default-profile.png',
     },
-    chats: [{
+    chats: [
+      {
         type: Schema.Types.ObjectId,
-        ref: 'Chat'
-    }]
-}, {
-    timestamps: true
-});
+        ref: 'Chat',
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
 const User = mongoose.model('User', userSchema);
 
