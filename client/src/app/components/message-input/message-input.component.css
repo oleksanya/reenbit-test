@@ -1,0 +1,36 @@
+.message-input-wrapper {
+  background-color: #ebecf0;
+  border-top: 0.1rem solid rgba(204, 204, 204, 0.39);
+  padding: 1.5rem 2rem;
+  position: relative;
+}
+
+.message-input {
+  outline: none;
+  padding: 1rem;
+  border-radius: 1.1rem;
+  width: 90%;
+  border: 0.063rem solid rgba(204, 204, 204, 0.39);
+}
+
+.send-icon {
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  font-size: 2rem;
+  color: #9f9f9f;
+  top: 0;
+  bottom: 0;
+  right: 12%;
+  margin: auto;
+  cursor: pointer;
+}
+
+.send-icon:hover {
+  color: #5badd7;
+  transition: all 0.3s ease-in-out;
+}
+
+.send-icon:focus {
+  outline: none;
+}

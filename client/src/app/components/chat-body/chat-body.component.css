@@ -1,0 +1,13 @@
+.chat-body-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+
+.messages-container {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 9.375rem);
+}
