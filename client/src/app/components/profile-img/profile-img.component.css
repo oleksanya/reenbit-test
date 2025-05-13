@@ -1,0 +1,30 @@
+.profile-wrapper {
+  border-radius: 50%;
+  background-color: #ebecf0;
+  width: 2.438rem;
+  height: 2.438rem;
+  margin-top: auto;
+  margin-bottom: auto;
+  position: relative;
+}
+
+.user-img {
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-status-icon {
+  position: absolute;
+  color: #79b97f;
+  font-size: 0.7rem;
+  font-weight: 600;
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 0.1rem solid #79b97f;
+  border-radius: 50%;
+  bottom: -0.2rem;
+  right: -0.3rem;
+}

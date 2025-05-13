@@ -1,0 +1,40 @@
+.chat-list-item-wrapper {
+  border-bottom: 0.1rem solid #dbdbdb;
+  height: 4.125rem;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.item-user-profile {
+}
+
+.item-message {
+  margin-top: 0.2rem;
+  flex-grow: 1;
+}
+
+.item-name {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  color: #424240;
+}
+
+.item-text {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+  color: #a5a5a5;
+}
+
+.item-time {
+  font-size: 0.8rem;
+  margin-right: 1rem;
+  text-align: right;
+}
+
+.time {
+  color: #757575;
+  width: 100%;
+}

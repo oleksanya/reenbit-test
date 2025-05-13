@@ -1,0 +1,33 @@
+.header-container {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.7rem;
+  position: relative;
+}
+
+.logout-logo {
+  position: absolute;
+  right: 0;
+}
+
+.sidebar-header-wrapper {
+  display: flex;
+  border-bottom: 0.1rem solid rgba(204, 204, 204, 0.39);
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0 1rem 1rem 1rem;
+  background-color: #f5f5f5;
+}
+
+.login-btn {
+  color: #70b5db;
+  border-radius: 0.7rem;
+  padding: 0.3rem 0.6rem;
+  background-color: #fff;
+  border: #e8e9ea 0.1rem solid;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
