@@ -15,6 +15,14 @@ const userSchema = new Schema(
       type: String,
       default: 'default-profile.png',
     },
+    email: {
+      type: String,
+      unique: true,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+    },
     chats: [
       {
         type: Schema.Types.ObjectId,

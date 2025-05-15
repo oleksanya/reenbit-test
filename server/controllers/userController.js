@@ -11,13 +11,18 @@ const predefinedBotIds = [
 
 exports.createUser = async (req, res) => {
   try {
-    const { firstName, secondName, profileImg } = req.body;
+    const { firstName, secondName, profileImg, email } = req.body;
 
     if (!firstName || !secondName) {
       return res.status(400).json({ message: 'First and second names are required' });
     }
 
-    const newUser = new User({ firstName, secondName, profileImg });
+    const existingUser = await User.find({ email });
+    if (existingUser.length > 0) {
+      return res.status(400).json({ message: 'Email already exists' });
+    }
+
+    const newUser = new User({ firstName, secondName, profileImg, email });
     await newUser.save();
 
     const systemUsers = await User.find({ _id: { $in: predefinedBotIds } });
@@ -42,7 +47,6 @@ exports.createUser = async (req, res) => {
     newUser.chats = chatIds;
 
     await newUser.save();
-
     res.status(201).json({ user: newUser });
   } catch (error) {
     console.error('createUser error:', error);
@@ -52,11 +56,16 @@ exports.createUser = async (req, res) => {
 
 exports.getUser = async (req, res) => {
   try {
-    const userId = req.params.id;
-    const user = await User.findById(userId).populate('chats');
+    const userEmail = req.user?.email;
+    if (!userEmail) {
+      return res.status(401).json({ message: 'Unauthorized: no email in token' });
+    }
+
+    const user = await User.findOne({ email: userEmail }).populate('chats');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+
     res.status(200).json({ user });
   } catch (error) {
     console.error('getUser error:', error);
