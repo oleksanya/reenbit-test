@@ -7,7 +7,20 @@ const Message = require('../models/Message');
 exports.getChatData = async (req, res) => {
   try {
     const chatId = req.params.id;
-    const chat = await Chat.findById(chatId);
+    const chat = await Chat.findById(chatId).populate('senderId', 'firstName secondName profileImg')
+      .populate('receiverId', 'firstName secondName profileImg')
+      .populate({
+        path: 'lastMessage',
+        populate: {
+        path: 'userId',
+        select: 'firstName secondName profileImg'
+        }
+      })
+      .populate({
+        path: 'messages',
+        select: 'content senderId createdAt',
+        options: { sort: { createdAt: 1 } }
+      });;
 
     if (!chat) {
       return res.status(404).json({ message: 'Chat not found' });
@@ -84,7 +97,32 @@ exports.getAllChatsByUserId = async (req, res) => {
       return res.status(400).json({ message: 'User ID is required' });
     }
 
-    const user = await User.findById(userId).populate('chats').select('chats');
+    const user = await User.findById(userId)   .populate({
+        path: 'chats',
+        populate: [
+          {
+            path: 'senderId',
+            select: 'firstName secondName profileImg'
+          },
+          {
+            path: 'receiverId',
+            select: 'firstName secondName profileImg'
+          },
+          {
+            path: 'lastMessage',
+            populate: {
+              path: 'userId',
+              select: 'firstName secondName profileImg'
+            }
+          },
+          {
+            path: 'messages',
+            select: 'content senderId createdAt',
+            options: { sort: { createdAt: 1 } }
+          }
+        ]
+      })
+      .select('chats');;
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

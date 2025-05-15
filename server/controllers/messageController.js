@@ -27,7 +27,6 @@ exports.createMessage = async (req, res) => {
       lastMessage: newMessage._id,
     });
 
-    res.status(201).json({ message: newMessage });
     //bot id
     const responseUserId = await Chat.findById(chatId).then((chat) => {
       return chat.senderId.toString() === currentUserId.toString()
