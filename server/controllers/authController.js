@@ -35,9 +35,10 @@ exports.googleAuth = async (req, res) => {
       user = await createNewUser(payload);
     }
 
+    // Generate JWT token with consistent id field
     const jwtToken = jwt.sign(
       {
-        id: user._id,
+        id: user._id.toString(), // Ensure ID is a string
         email: user.email,
         fullName: `${user.firstName} ${user.secondName}`,
       },
