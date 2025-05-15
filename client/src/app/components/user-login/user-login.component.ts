@@ -67,7 +67,6 @@ createUserProfile(userData: any): void {
   this.http.post<{ user: any, jwtToken: string }>(`${this.apiUrl}/user/create`, userData)
     .subscribe({
       next: (res) => {
-        console.log('User created successfully:', res);
         localStorage.setItem('jwtToken', res.jwtToken);
         this.router.navigate(['/chat']);
       },
