@@ -1,11 +1,10 @@
 <div class="profile-wrapper">
-  <!-- <img src= "{{ userImg }}"class="user-img" alt="user"/> -->
-
-  <img
-    src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-    class="user-img"
-    alt="user"
-  />
-
+  @if(profileImg()) {
+    <img
+      [src]="profileImg()"
+      class="user-img"
+      alt="User profile"
+    />
+  }
   <span class="material-symbols-outlined user-status-icon"> done </span>
 </div>
