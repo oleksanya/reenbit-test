@@ -30,6 +30,14 @@ mongoose
   .catch((err) => console.error('MongoDB connection error:', err));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const server = require('http').createServer(app);
+const setupSocketIO = require('./socket');
+
+const io = setupSocketIO(server);
+
+// Make io available to our route handlers
+app.set('io', io);
+
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
