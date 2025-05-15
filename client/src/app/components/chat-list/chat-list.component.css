@@ -6,14 +6,17 @@
 
 .chat-list-wrapper {
   height: 100%;
+  max-height: 80vh;
   padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
   display: flex;
   flex-direction: column;
 }
 
 .list-container {
   overflow-y: scroll;
-  height: 80%;
+  height: 90%;
   margin-top: 1rem;
 }
 
@@ -29,4 +32,15 @@
   width: 0.425rem;
   border-radius: 1rem;
   background-color: rgba(204, 204, 204, 0.39);
+}
+
+.no-results {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #666;
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 2rem;
 }

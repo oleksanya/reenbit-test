@@ -1,3 +1,11 @@
-<div class="messages-wrapper">
-  <app-messages-container-item></app-messages-container-item>
+<div #messagesContainer class="messages-wrapper">  
+  @for(message of localMessages(); track message._id) {
+    @if(message?._id && message?.userId?._id) {
+      <app-messages-container-item
+        [message]="message"
+        [isOwnMessage]="message.userId._id === userId()"
+        [receiverData]="receiverData()"
+      ></app-messages-container-item>
+    }
+  }
 </div>

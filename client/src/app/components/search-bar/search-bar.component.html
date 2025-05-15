@@ -1,7 +1,12 @@
 <div class="searchbar-wrapper">
   <div class="searchbar-container">
     <span class="material-symbols-outlined search-icon">search</span>
-
-    <input class="search-field" type="text" placeholder="Search or start new chat" />
+    
+    <input 
+      class="search-field" 
+      type="text" 
+      placeholder="Search chat by name" 
+      (input)="onSearch($event)"
+    />
   </div>
 </div>

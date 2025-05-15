@@ -1,55 +1,42 @@
-<div class="message-from">
-  <app-profile-img></app-profile-img>
+@if(message() && !isOwnMessage()) {
+  <div class="message-from">
+    <app-profile-img [profileImg]="receiverData()?.profileImg"></app-profile-img>
+    <p class="message-text-from">{{ message()?.content }}</p>
+    <span class="message-time-from">{{ formattedDate() }}</span>
+  </div>
+}
 
-  <p class="message-text-from">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-to"> 4/22/17. 4:00 AM </span>
-</div>
-
-<div class="message-to">
-  <p class="message-text-to">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-from"> 4/22/17. 4:00 AM </span>
-</div>
-
-<div class="message-from">
-  <app-profile-img></app-profile-img>
-
-  <p class="message-text-from">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-to"> 4/22/17. 4:00 AM </span>
-</div>
-
-<div class="message-to">
-  <p class="message-text-to">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-from"> 4/22/17. 4:00 AM </span>
-</div>
-
-<div class="message-from">
-  <app-profile-img></app-profile-img>
-
-  <p class="message-text-from">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-to"> 4/22/17. 4:00 AM </span>
-</div>
-
-<div class="message-to">
-  <p class="message-text-to">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-from"> 4/22/17. 4:00 AM </span>
-</div>
-
-<div class="message-from">
-  <app-profile-img></app-profile-img>
-
-  <p class="message-text-from">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-to"> 4/22/17. 4:00 AM </span>
-</div>
-
-<div class="message-to">
-  <p class="message-text-to">Queckly come to the meeting room 1B, we have a big server issue</p>
-
-  <span class="message-time-from"> 4/22/17. 4:00 AM </span>
-</div>
+@if(message() && isOwnMessage()) {
+  <div class="message-to">
+    @if(!isEditing()) {
+      <div class="message-content">
+        <p class="message-text-to">
+          {{ message()?.content }}
+          <button class="edit-message-btn" (click)="startEditing()">
+            <span class="material-symbols-outlined">edit</span>
+          </button>
+        </p>
+      </div>
+    } @else {
+      <div class="edit-message">
+        <input 
+          class="edit-message-input"
+          type="text" 
+          [ngModel]="editedContent()"
+          (ngModelChange)="editedContent.set($event)"
+          (keydown)="handleKeyDown($event)"
+          #editInput
+        />
+        <div class="edit-actions">
+          <button class="save-btn" (click)="saveEdit()">
+            <span class="material-symbols-outlined">check</span>
+          </button>
+          <button class="cancel-btn" (click)="cancelEdit()">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+    }
+    <span class="message-time-to">{{ formattedDate() }}</span>
+  </div>
+}

@@ -1,28 +1,17 @@
 <div class="chat-list-wrapper">
   <h2 class="list-title">Chats</h2>
-
-  <!-- <div class="list-container" *ngIf="allUsers">
-          <app-dialog *ngFor="let user of allUsers"  
-              [chatData]="user" 
-              (dialogClicked)="catchEvent($event)">
-          </app-dialog>
-      </div> -->
-
   <div class="list-container">
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
-
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
-
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
-
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
-    <app-chat-list-item> </app-chat-list-item>
+    @if (chats()?.length) {
+      @for (chat of chats(); track chat._id) {
+        <app-chat-list-item 
+          [chat]="chat"
+          (chatSelected)="onChatSelect($event)"
+        ></app-chat-list-item>
+      }
+    } @else {
+      <div class="no-results">
+        <span>No chats found</span>
+      </div>
+    }
   </div>
 </div>

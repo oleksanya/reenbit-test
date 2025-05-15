@@ -1,4 +1,4 @@
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { ProfileImgComponent } from '../profile-img/profile-img.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
 import { User } from '../../interfaces/user';
@@ -15,7 +15,13 @@ export class SidebarHeaderComponent {
   router = inject(Router);
   
   user = input<User>();
+  searchChange = output<string>();
+  
   userImg = computed(() => this.user()?.profileImg);
+
+  onSearch(term: string): void {
+    this.searchChange.emit(term);
+  }
 
   signOut() {
     localStorage.removeItem('jwtToken');
