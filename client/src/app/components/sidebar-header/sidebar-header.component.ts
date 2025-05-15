@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { ProfileImgComponent } from '../profile-img/profile-img.component';
 import { SearchBarComponent } from '../search-bar/search-bar.component';
+import { User } from '../../interfaces/user';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar-header',
@@ -10,8 +12,13 @@ import { SearchBarComponent } from '../search-bar/search-bar.component';
   styleUrl: './sidebar-header.component.css',
 })
 export class SidebarHeaderComponent {
+  router = inject(Router);
+  
+  user = input<User>();
+  userImg = computed(() => this.user()?.profileImg);
+
   signOut() {
-    console.log('future sign out');
-    // return this.auth.SignOut();
+    localStorage.removeItem('jwtToken');
+    this.router.navigate(['/auth']);
   }
 }

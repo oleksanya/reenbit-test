@@ -1,12 +1,16 @@
 <div class="sidebar-header-wrapper">
   <div class="header-container">
-    <app-profile-img></app-profile-img>
+    <app-profile-img [profileImg]="userImg()"></app-profile-img>
 
-    <!-- <span class="material-symbols-outlined logout-logo" (click)="signOut()">
-            logout
-        </span> -->
+    @if(userImg()) { 
+      <span class="material-symbols-outlined logout-logo" (click)="signOut()">
+        logout
+      </span>
+      }
 
-    <button type="button" class="login-btn">Log in</button>
+    @else { 
+      <button type="button" class="login-btn">Log in</button>
+  }
   </div>
 
   <app-search-bar></app-search-bar>
