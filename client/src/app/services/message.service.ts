@@ -19,7 +19,9 @@ export class MessageService {
   private messageDeletedSubject = new Subject<{ messageId: string, chatId: string }>();
   private processedMessageIds = new Set<string>();
 
-  constructor() {    this.socketService.onNewMessage().subscribe(message => {
+  constructor() {  
+    this.socketService.onNewMessage().subscribe(message => {
+
       if (message?._id && !this.processedMessageIds.has(message._id)) {
 
         this.processedMessageIds.add(message._id);
@@ -27,12 +29,12 @@ export class MessageService {
         this.newMessageSubject.next(message);
           // Only show toast for bot messages (not the current user's messages)
         const currentUserId = localStorage.getItem('userId');
-        
+
         if (message.userId._id !== currentUserId && this.isFromBot(message)) {
           const messagePreview = message.content.length > 50 
             ? message.content.substring(0, 50) + '...' 
             : message.content;
-          this.toastService.show(`Bot: ${messagePreview}`, 'info');
+          this.toastService.show(`${message.userId.firstName}  : ${messagePreview}`, 'info');
         }
       }
     });
@@ -59,11 +61,10 @@ export class MessageService {
   onMessageDeleted(): Observable<{ messageId: string, chatId: string }> {
     return this.messageDeletedSubject.asObservable();
   } 
-    private isFromBot(message: Message): boolean {
-      return message?.userId?.firstName?.toLowerCase() === 'bot' || 
-              message?.userId?.secondName?.toLowerCase() === 'assistant';
-    }
-    
+  private isFromBot(message: Message): boolean {
+    const currentUserId = localStorage.getItem('userId');
+    return message?.userId?._id !== currentUserId;
+}
     sendMessage(userId: string, chatId: string, content: string): Observable<Message> {
     const showBotTyping = () => {
       this.toastService.show('Bot is typing...', 'info', 2000);
