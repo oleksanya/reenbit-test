@@ -4,7 +4,9 @@ const jwt = require('jsonwebtoken');
 function setupSocketIO(server) {
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:4200",
+      origin: process.env.NODE_ENV === 'production'
+        ? true // Allow any origin in production
+        : "http://localhost:4200",
       methods: ["GET", "POST", "PATCH", "DELETE"],
       credentials: true
     }
@@ -19,7 +21,7 @@ function setupSocketIO(server) {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      socket.userId = decoded.id; // Using id from JWT token
+      socket.userId = decoded.id;
       next();
     } catch (err) {
       next(new Error('Authentication error: Invalid token'));
@@ -28,7 +30,6 @@ function setupSocketIO(server) {
 
   const userSockets = new Map();
 
-  // Handle socket connections
   io.on('connection', (socket) => {
     if (!socket.userId) {
       socket.disconnect();
@@ -38,10 +39,8 @@ function setupSocketIO(server) {
     console.log(`User connected: ${socket.userId}`);
     userSockets.set(socket.userId, socket);
 
-    // Join user to their specific room
     socket.join(socket.userId);
 
-    // Handle new messages
     socket.on('sendMessage', async (message) => {
       // Get recipient's socket
       const recipients = [message.senderId, message.receiverId];
