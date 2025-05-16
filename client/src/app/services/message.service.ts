@@ -20,9 +20,14 @@ export class MessageService {
   
   constructor() {
     this.socketService.onNewMessage().subscribe(message => {
+
       if (message?._id) {
         this.newMessageSubject.next(message);
-        this.toastService.show('New message received', 'info');
+        const senderName = message.userId.firstName;
+        const messagePreview = message.content.length > 50 
+          ? message.content.substring(0, 50) + '...' 
+          : message.content;
+        this.toastService.show(`${senderName}: ${messagePreview}`, 'info');
       }
     });
 
@@ -63,10 +68,8 @@ export class MessageService {
       tap((response) => {
         if (response.message?._id) {
           // Emit locally first for immediate UI update
-          this.newMessageSubject.next(response.message);
-          // Then emit through socket for other clients
+          this.newMessageSubject.next(response.message); 
           this.socketService.sendMessage(response.message);
-          this.toastService.show('Message sent successfully', 'success', 2000);
         }
       }),
       map((response) => response.message),
@@ -82,7 +85,6 @@ export class MessageService {
     }).pipe(
       tap((response) => {
         if (response.message?._id) {
-          // Emit locally first for immediate UI update
           this.messageEditedSubject.next(response.message);
           // Then emit through socket for other clients
           this.socketService.editMessage(messageId, content);
