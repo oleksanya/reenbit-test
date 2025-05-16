@@ -49,11 +49,12 @@ export class UserLoginComponent {
   }
 
   sendTokenToBackend(token: string): void {
-    this.http.post<{ jwtToken: string, userData?: any }>(`${this.apiUrl}/auth/google`, { token })
+    this.http.post<{ jwtToken: string, user?: any }>(`${this.apiUrl}/auth/google`, { token })
     .subscribe({
       next: (res) => {
         if(res.jwtToken) {
           localStorage.setItem('jwtToken', res.jwtToken);
+          localStorage.setItem('userId', res.user.id);
           this.router.navigate(['/chat']);
         }
       },
@@ -68,6 +69,7 @@ createUserProfile(userData: any): void {
     .subscribe({
       next: (res) => {
         localStorage.setItem('jwtToken', res.jwtToken);
+
         this.router.navigate(['/chat']);
       },
       error: (error) => {

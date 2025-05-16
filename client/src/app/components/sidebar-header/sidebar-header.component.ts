@@ -25,6 +25,7 @@ export class SidebarHeaderComponent {
 
   signOut() {
     localStorage.removeItem('jwtToken');
+    localStorage.removeItem('userId');
     this.router.navigate(['/auth']);
   }
 }
