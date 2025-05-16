@@ -1,10 +1,11 @@
-import { Component, ViewChild, inject, input, output, OnInit } from '@angular/core';
+import { Component, ViewChild, inject, input, output, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileImgComponent } from '../profile-img/profile-img.component';
 import { Chat } from '../../interfaces/chat';
 import { UserPersonalData } from '../../interfaces/userPersonalData';
 import { DatePipe } from '@angular/common';
 import { ChatService } from '../../services/chat.service';
+import { MessageService } from '../../services/message.service';
 import { EditChatDialogComponent } from '../edit-chat-dialog/edit-chat-dialog.component';
 
 @Component({
@@ -22,14 +23,39 @@ export class ChatListItemComponent implements OnInit {
   chatDeleted = output<void>();
 
   chatService = inject(ChatService);
+  messageService = inject(MessageService);
   
   receiverId!: UserPersonalData;
   receiverUserPhoto: string = '';
   isDeleting: boolean = false;
 
-  constructor() {}
+  localChat = signal<Chat | undefined>(undefined);
+
+  isLastMessageFromBot = computed(() => {
+    const lastMessage = this.localChat()?.lastMessage;
+    if (!lastMessage) return false;
+    return lastMessage.userId._id === this.localChat()?.receiverId._id;
+  });
+
+  constructor() {
+    // Subscribe to new messages to update last message
+    this.messageService.onNewMessage().subscribe((message) => {
+      if (message?._id && message.chatId === this.localChat()?._id) {
+        this.localChat.update(current => current ? {
+          ...current,
+          lastMessage: {
+            chatId: message.chatId,
+            content: message.content,
+            userId: message.userId,
+            createdAt: message.createdAt.toString()
+          }
+        } : current);
+      }
+    });
+  }
 
   ngOnInit(): void {
+    this.localChat.set(this.chat());
     this.receiverId = this.chat()?.receiverId as UserPersonalData;
     
     if(this.receiverId.profileImg === 'bot-profile.png') {
@@ -38,10 +64,9 @@ export class ChatListItemComponent implements OnInit {
       this.receiverUserPhoto = this.receiverId.profileImg;
     }
   }
-
   clickDialog(): void {
     if (!this.isDeleting) {
-      this.chatSelected.emit(this.chat()?._id ?? '');
+      this.chatSelected.emit(this.localChat()?._id ?? '');
     }
   }
 
@@ -67,7 +92,7 @@ export class ChatListItemComponent implements OnInit {
         await this.chatService.deleteChat(chatId).subscribe({
           next: () => {
             this.chatDeleted.emit();
-            window.location.reload(); // Temporary solution - should use state management
+            window.location.reload(); // Temporary solution to refresh chat list
           },
           error: (err) => {
             console.error('Error deleting chat:', err);

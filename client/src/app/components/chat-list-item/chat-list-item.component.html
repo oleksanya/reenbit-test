@@ -6,8 +6,10 @@
   <div class="item-message">
     <h2 class="item-name">{{ receiverId.firstName + ' ' + receiverId.secondName }}</h2>
     <div>
-      @if(this.chat()?.lastMessage) {
-        <p class="item-text">{{ this.chat()?.lastMessage?.content }}</p>
+      @if(this.localChat()?.lastMessage) {
+        <p class="item-text" [class.bot-message]="isLastMessageFromBot()">
+          {{ localChat()?.lastMessage?.content }}
+        </p>
       } @else {
         <p class="item-text">Text me your first message!</p>
       }
@@ -16,7 +18,7 @@
 
   <div class="item-actions">
     <div class="item-time">
-      <span class="time">{{ this.chat()?.lastMessage?.createdAt | date:'shortTime' }}</span>
+      <span class="time">{{ localChat()?.lastMessage?.createdAt | date:'shortTime' }}</span>
     </div>
     <div class="action-buttons">
       <button 
