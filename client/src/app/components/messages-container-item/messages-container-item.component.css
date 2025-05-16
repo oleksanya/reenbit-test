@@ -60,6 +60,10 @@
   text-align: left;
 }
 
+.message-content {
+  display: flex;
+  justify-content: right; 
+}
 .edit-message-btn {
   opacity: 0;
   position: absolute;
