@@ -17,25 +17,22 @@ export class MessageService {
   private newMessageSubject = new Subject<Message>();
   private messageEditedSubject = new Subject<Message>();
   private messageDeletedSubject = new Subject<{ messageId: string, chatId: string }>();
-    // Track message IDs we've already seen to prevent duplicates
   private processedMessageIds = new Set<string>();
 
-  constructor() {
-    this.socketService.onNewMessage().subscribe(message => {
+  constructor() {    this.socketService.onNewMessage().subscribe(message => {
       if (message?._id && !this.processedMessageIds.has(message._id)) {
-        // Add to processed set to prevent duplicates
+
         this.processedMessageIds.add(message._id);
         
-        // Process the message
         this.newMessageSubject.next(message);
+          // Only show toast for bot messages (not the current user's messages)
+        const currentUserId = localStorage.getItem('userId');
         
-        // Only show toast for messages from other users
-        if (message.userId._id !== localStorage.getItem('userId')) {
-          const senderName = message.userId.firstName;
+        if (message.userId._id !== currentUserId && this.isFromBot(message)) {
           const messagePreview = message.content.length > 50 
             ? message.content.substring(0, 50) + '...' 
             : message.content;
-          this.toastService.show(`${senderName}: ${messagePreview}`, 'info');
+          this.toastService.show(`Bot: ${messagePreview}`, 'info');
         }
       }
     });
@@ -51,7 +48,6 @@ export class MessageService {
     });
   }
 
-  // Observable streams for components to subscribe to
   onNewMessage(): Observable<Message> {
     return this.newMessageSubject.asObservable();
   }
@@ -62,7 +58,12 @@ export class MessageService {
 
   onMessageDeleted(): Observable<{ messageId: string, chatId: string }> {
     return this.messageDeletedSubject.asObservable();
-  }
+  } 
+    private isFromBot(message: Message): boolean {
+      return message?.userId?.firstName?.toLowerCase() === 'bot' || 
+              message?.userId?.secondName?.toLowerCase() === 'assistant';
+    }
+    
     sendMessage(userId: string, chatId: string, content: string): Observable<Message> {
     const showBotTyping = () => {
       this.toastService.show('Bot is typing...', 'info', 2000);
@@ -75,10 +76,8 @@ export class MessageService {
     }).pipe(
       tap((response) => {
         if (response.message?._id) {
-          // Add to processed set to prevent duplicates later when socket emits
           this.processedMessageIds.add(response.message._id);
           
-          // Emit locally for immediate UI update
           this.newMessageSubject.next(response.message);
         }
       }),
