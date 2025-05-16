@@ -25,12 +25,17 @@ export class MessagesContainerComponent {
     effect(() => {
       const newMessages = this.messages();
       this.localMessages.set(newMessages || []);
-    }, { allowSignalWrites: true });
-
-    // Handle real-time message updates
+    }, { allowSignalWrites: true });    // Handle real-time message updates
     this.messageService.onNewMessage().subscribe((message) => {
       if (message?._id && message.chatId === this.chatId()) {
-        this.localMessages.update(current => [...current, message]);
+        // Check if message already exists in the list before adding
+        this.localMessages.update(current => {
+          // Check if this message ID already exists in our current messages
+          const messageExists = current.some(msg => msg._id === message._id);
+          
+          // Only add if it doesn't already exist
+          return messageExists ? current : [...current, message];
+        });
       }
     });
 

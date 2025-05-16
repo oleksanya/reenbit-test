@@ -17,17 +17,26 @@ export class MessageService {
   private newMessageSubject = new Subject<Message>();
   private messageEditedSubject = new Subject<Message>();
   private messageDeletedSubject = new Subject<{ messageId: string, chatId: string }>();
-  
+    // Track message IDs we've already seen to prevent duplicates
+  private processedMessageIds = new Set<string>();
+
   constructor() {
     this.socketService.onNewMessage().subscribe(message => {
-
-      if (message?._id) {
+      if (message?._id && !this.processedMessageIds.has(message._id)) {
+        // Add to processed set to prevent duplicates
+        this.processedMessageIds.add(message._id);
+        
+        // Process the message
         this.newMessageSubject.next(message);
-        const senderName = message.userId.firstName;
-        const messagePreview = message.content.length > 50 
-          ? message.content.substring(0, 50) + '...' 
-          : message.content;
-        this.toastService.show(`${senderName}: ${messagePreview}`, 'info');
+        
+        // Only show toast for messages from other users
+        if (message.userId._id !== localStorage.getItem('userId')) {
+          const senderName = message.userId.firstName;
+          const messagePreview = message.content.length > 50 
+            ? message.content.substring(0, 50) + '...' 
+            : message.content;
+          this.toastService.show(`${senderName}: ${messagePreview}`, 'info');
+        }
       }
     });
 
@@ -54,8 +63,7 @@ export class MessageService {
   onMessageDeleted(): Observable<{ messageId: string, chatId: string }> {
     return this.messageDeletedSubject.asObservable();
   }
-  
-  sendMessage(userId: string, chatId: string, content: string): Observable<Message> {
+    sendMessage(userId: string, chatId: string, content: string): Observable<Message> {
     const showBotTyping = () => {
       this.toastService.show('Bot is typing...', 'info', 2000);
     };
@@ -64,11 +72,14 @@ export class MessageService {
       userId,
       chatId,
       content
-    }).pipe(      tap((response) => {
+    }).pipe(
+      tap((response) => {
         if (response.message?._id) {
-          // Only emit locally - the server will handle broadcasting via socket
+          // Add to processed set to prevent duplicates later when socket emits
+          this.processedMessageIds.add(response.message._id);
+          
+          // Emit locally for immediate UI update
           this.newMessageSubject.next(response.message);
-
         }
       }),
       map((response) => response.message),
