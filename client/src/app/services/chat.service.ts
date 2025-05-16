@@ -13,17 +13,12 @@ export class ChatService {
   http = inject(HttpClient);
 
   constructor() { }
-
   getChatsDataByUserId(userId: string): Observable<ChatResponse> {
-    return this.http.get<ChatResponse>(`${this.apiUrl}/getAllChats/${userId}`).pipe(
-      tap(response => console.log('Chat data received:', response))
-    );
+    return this.http.get<ChatResponse>(`${this.apiUrl}/getAllChats/${userId}`);
   }
 
   getChatById(chatId: string): Observable<{ chat: Chat }> {
-    return this.http.get<{ chat: Chat }>(`${this.apiUrl}/${chatId}`).pipe(
-      tap(response => console.log('Individual chat data:', response))
-    );
+    return this.http.get<{ chat: Chat }>(`${this.apiUrl}/${chatId}`);
   }
 
   createChat(chatData: { 
