@@ -30,8 +30,10 @@ app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 
 // Handle client paths consistently
-const clientPath = path.join(__dirname, '../client/dist/client');
+
+const clientPath = path.join(__dirname, '../client/dist/client/browser');
 const indexPath = path.join(clientPath, 'index.html');
+
 
 // Serve static files
 app.use(express.static(clientPath));

@@ -30,8 +30,7 @@ try {
   // Build the client application
   console.log('Running client build...');
   execSync('npm run build', { stdio: 'inherit' });
-  
-  // Step 4: Verify the build output structure
+    // Step 4: Verify the build output structure
   const distPath = path.join(process.cwd(), 'dist/client');
   console.log('Checking build output at:', distPath);
   
@@ -40,28 +39,19 @@ try {
     const files = fs.readdirSync(distPath);
     console.log('Files in build directory:', files);
     
-    // Check for index.html
-    const indexPath = path.join(distPath, 'index.html');
-    if (fs.existsSync(indexPath)) {
-      console.log('index.html exists!');
-    } else {
-      console.log('ERROR: index.html not found!');
+    const browserPath = path.join(distPath, 'browser');
+    if (fs.existsSync(browserPath)) {
+      console.log('Found browser subdirectory:', fs.readdirSync(browserPath));
       
-      // Look for browser subdirectory
-      const browserPath = path.join(distPath, 'browser');
-      if (fs.existsSync(browserPath)) {
-        console.log('Found browser subdirectory:', fs.readdirSync(browserPath));
-        
-        // Create an index.html at the expected location
-        if (fs.existsSync(path.join(browserPath, 'index.html'))) {
-          console.log('Copying index.html from browser directory to client directory...');
-          fs.copyFileSync(
-            path.join(browserPath, 'index.html'), 
-            path.join(distPath, 'index.html')
-          );
-          console.log('Successfully copied index.html!');
-        }
+      // Check for index.html in browser directory
+      const indexPath = path.join(browserPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        console.log('index.html exists in browser directory!');
+      } else {
+        console.log('ERROR: index.html not found in browser directory!');
       }
+    } else {
+      console.log('ERROR: browser subdirectory not found! This is required for Angular 18+');
     }
   } else {
     console.log('ERROR: Build directory not found!');
