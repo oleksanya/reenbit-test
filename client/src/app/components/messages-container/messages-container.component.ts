@@ -15,39 +15,35 @@ export class MessagesContainerComponent {
   messages = input.required<Message[]>();
   userId = input.required<string>();
   receiverData = input.required<UserPersonalData>();
+  chatId = input.required<string>();
   
   private messageService = inject(MessageService);
 
   localMessages = signal<Message[]>([]);
 
   constructor() {
-    // Update local messages when input messages change
     effect(() => {
       const newMessages = this.messages();
-      if (newMessages?.length) {
-        this.localMessages.set(newMessages);
-      }
+      this.localMessages.set(newMessages || []);
     }, { allowSignalWrites: true });
 
     // Handle real-time message updates
     this.messageService.onNewMessage().subscribe((message) => {
-      if (message?._id) {
+      if (message?._id && message.chatId === this.chatId()) {
         this.localMessages.update(current => [...current, message]);
       }
     });
 
-    // Handle edited messages
     this.messageService.onMessageEdited().subscribe((editedMessage) => {
-      if (editedMessage?._id) {
+      if (editedMessage?._id && editedMessage.chatId === this.chatId()) {
         this.localMessages.update(current =>
           current.map(msg => msg._id === editedMessage._id ? editedMessage : msg)
         );
       }
     });
 
-    // Handle deleted messages
-    this.messageService.onMessageDeleted().subscribe(({ messageId }) => {
-      if (messageId) {
+    this.messageService.onMessageDeleted().subscribe(({ messageId, chatId }) => {
+      if (messageId && chatId === this.chatId()) {
         this.localMessages.update(current =>
           current.filter(msg => msg._id !== messageId)
         );
