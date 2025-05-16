@@ -46,7 +46,6 @@ npm start
 - Automated bot responses using Zenquotes API
 - Chat search
 - Show toast notification with new message;
-- Chat search;
 
 ![image](https://github.com/user-attachments/assets/40d6ebfe-9aef-4bba-a0c0-113497dc964d)
 
