@@ -1,6 +1,6 @@
 # Test Chat App
 
-Full-stack application built with Angular and Node.js (Express.Js)
+Full-stack application built with Angular and Node.js (Express.js)
 
 ## Project Structure
 ```
