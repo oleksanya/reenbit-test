@@ -15,11 +15,22 @@ export class AppComponent implements OnDestroy {
   title = 'Test Chat App';
   http = inject(HttpClient);
   private socketService = inject(SocketService);
-
   constructor() {
+    this.initializeSocket();
+
+    window.addEventListener('storage', (event) => {
+      if (event.key === 'jwtToken') {
+        this.initializeSocket();
+      }
+    });
+  }
+
+  private initializeSocket(): void {
     const token = localStorage.getItem('jwtToken');
     if (token) {
       this.socketService.connect(token);
+    } else {
+      console.error('No token found, not connecting socket');
     }
   }
 

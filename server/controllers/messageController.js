@@ -58,13 +58,12 @@ exports.createMessage = async (req, res) => {
 
         const populatedBotMessage = await Message.findById(botMessage._id)
           .populate('userId', 'firstName secondName profileImg');
-
-        // Emit bot message through socket
-        const io = req.app.get('io');
-        io.to(currentUserId).emit('newMessage', {
-          ...populatedBotMessage.toObject(),
-          senderId: responseUserId,
-          receiverId: currentUserId
+        io.emit('newMessage', populatedBotMessage);
+        
+        // Also broadcast the last message update for chat list
+        io.emit('chatUpdated', {
+          chatId,
+          lastMessage: populatedBotMessage
         });
       } catch (error) {
         console.error('Error fetching quote:', error);

@@ -15,7 +15,6 @@ export class SocketService {
   private newMessageSubject = new Subject<Message>();
   private messageEditedSubject = new Subject<Message>();
   private userTypingSubject = new Subject<{userId: string, chatId: string}>();
-
   constructor() {
     // Use relative URL for Socket.io to automatically connect to the current domain in production
     // This will use the same host as the page in production, or localhost:2000 in development
@@ -26,7 +25,10 @@ export class SocketService {
     this.socket = io(socketUrl, {
       withCredentials: true,
       autoConnect: false,
-      path: '/socket.io'
+      reconnection: true,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
+      timeout: 20000
     });
   }
 
