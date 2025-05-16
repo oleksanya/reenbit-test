@@ -30,7 +30,6 @@ export class MessageInputComponent {
         this.messageText.trim()
       ).subscribe({
         next: (response) => {
-          console.log('Message sent:', response);
           this.messageText = '';
         },
         error: (error) => {
