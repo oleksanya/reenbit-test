@@ -40,7 +40,6 @@ function setupSocketIO(server) {
     userSockets.set(socket.userId, socket);    socket.join(socket.userId);
       socket.on('sendMessage', async (message) => {
 
-      console.log('Socket sendMessage event received but not emitting (handled by controller)');
     });
 
     // Handle message editing

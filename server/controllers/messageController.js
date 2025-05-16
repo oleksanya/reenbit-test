@@ -106,9 +106,6 @@ exports.getMessageById = async (req, res) => {
 
 exports.editMessage = async (req, res) => {
   try {
-    console.log(req.params.id);
-    console.log(req.body);
-
     const messageId = req.params.id;
     const { content } = req.body;
 
