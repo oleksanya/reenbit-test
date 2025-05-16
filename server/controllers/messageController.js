@@ -25,9 +25,7 @@ exports.createMessage = async (req, res) => {
     await Chat.findByIdAndUpdate(chatId, {
       $push: { messages: newMessage._id },
       lastMessage: newMessage._id,
-    });
-
-    const populatedMessage = await Message.findById(newMessage._id)
+    });    const populatedMessage = await Message.findById(newMessage._id)
       .populate('userId', 'firstName secondName profileImg');
 
     //bot id
@@ -35,6 +33,18 @@ exports.createMessage = async (req, res) => {
       return chat.senderId.toString() === currentUserId.toString()
         ? chat.receiverId
         : chat.senderId;
+    });
+    
+    // Get io instance from the app
+    const io = req.app.get('io');
+    
+    // Broadcast message to all clients
+    io.emit('newMessage', populatedMessage);
+    
+    // Also update chat list with latest message
+    io.emit('chatUpdated', {
+      chatId,
+      lastMessage: populatedMessage
     });
     
     res.status(201).json({ message: populatedMessage });
@@ -54,10 +64,13 @@ exports.createMessage = async (req, res) => {
         await Chat.findByIdAndUpdate(chatId, {
           $push: { messages: botMessage._id },
           lastMessage: botMessage._id,
-        });
-
-        const populatedBotMessage = await Message.findById(botMessage._id)
+        });        const populatedBotMessage = await Message.findById(botMessage._id)
           .populate('userId', 'firstName secondName profileImg');
+        
+        // Get io instance from the app
+        const io = req.app.get('io');
+        
+        // Emit bot message to all clients
         io.emit('newMessage', populatedBotMessage);
         
         // Also broadcast the last message update for chat list

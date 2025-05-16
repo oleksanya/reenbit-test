@@ -64,12 +64,11 @@ export class MessageService {
       userId,
       chatId,
       content
-    }).pipe(
-      tap((response) => {
+    }).pipe(      tap((response) => {
         if (response.message?._id) {
-          // Emit locally first for immediate UI update
-          this.newMessageSubject.next(response.message); 
-          this.socketService.sendMessage(response.message);
+          // Only emit locally - the server will handle broadcasting via socket
+          this.newMessageSubject.next(response.message);
+
         }
       }),
       map((response) => response.message),

@@ -38,20 +38,9 @@ function setupSocketIO(server) {
 
     console.log(`User connected: ${socket.userId}`);
     userSockets.set(socket.userId, socket);    socket.join(socket.userId);
-    
-    socket.on('sendMessage', async (message) => {
-      // Get recipient's socket and also broadcast globally
-      const recipients = [message.senderId, message.receiverId];
-      
-      // Send to specific recipients for direct messaging
-      recipients.forEach(userId => {
-        if (userId !== socket.userId) {
-          io.to(userId).emit('newMessage', message);
-        }
-      });
-      
-      // Also broadcast globally for reliability
-      io.emit('newMessage', message);
+      socket.on('sendMessage', async (message) => {
+
+      console.log('Socket sendMessage event received but not emitting (handled by controller)');
     });
 
     // Handle message editing
