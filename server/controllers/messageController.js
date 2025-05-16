@@ -27,16 +27,19 @@ exports.createMessage = async (req, res) => {
       lastMessage: newMessage._id,
     });
 
-    res.status(201).json({ message: newMessage });
+    const populatedMessage = await Message.findById(newMessage._id)
+      .populate('userId', 'firstName secondName profileImg');
+
     //bot id
     const responseUserId = await Chat.findById(chatId).then((chat) => {
       return chat.senderId.toString() === currentUserId.toString()
         ? chat.receiverId
         : chat.senderId;
     });
+    
+    res.status(201).json({ message: populatedMessage });
 
-    res.status(201).json({ message: newMessage });
-
+    // Bot responds after 3 seconds
     setTimeout(async () => {
       try {
         const quoteRes = await axios.get('https://zenquotes.io/api/quotes/random');
@@ -52,10 +55,22 @@ exports.createMessage = async (req, res) => {
           $push: { messages: botMessage._id },
           lastMessage: botMessage._id,
         });
+
+        const populatedBotMessage = await Message.findById(botMessage._id)
+          .populate('userId', 'firstName secondName profileImg');
+
+        // Emit bot message through socket
+        const io = req.app.get('io');
+        io.to(currentUserId).emit('newMessage', {
+          ...populatedBotMessage.toObject(),
+          senderId: responseUserId,
+          receiverId: currentUserId
+        });
       } catch (error) {
         console.error('Error fetching quote:', error);
       }
-    });
+    }, 3000);
+
   } catch (error) {
     console.error('createMessage error:', error);
     res.status(500).json({ message: 'Server error' });

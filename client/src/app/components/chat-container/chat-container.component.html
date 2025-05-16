@@ -1,5 +1,14 @@
 <div class="chat-wrapper">
-  <app-chat-sidebar class="chat-sidebar"></app-chat-sidebar>
+  @if(user) { 
+    <app-chat-sidebar class="chat-sidebar" 
+    [user]="user"
+    [chatIds]="chatIds"
+    (chatSelected)="onChatSelect($event)"
+    ></app-chat-sidebar>
 
-  <app-chat-body class="chat-main"></app-chat-body>
+    <app-chat-body class="chat-main" 
+    [user]="user"
+    [chatData]="selectedChatData"
+    ></app-chat-body>
+  }
 </div>

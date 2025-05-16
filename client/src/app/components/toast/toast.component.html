@@ -1,0 +1,13 @@
+@if (toastService.toasts()) {
+  <div class="toast-container">
+    @for (toast of toastService.toasts(); track toast.id) {
+      <div 
+        class="toast" 
+        [class]="toast.type"
+        @toastAnimation
+      >
+        {{ toast.message }}
+      </div>
+    }
+  </div>
+}

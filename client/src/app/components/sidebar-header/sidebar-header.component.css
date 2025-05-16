@@ -10,6 +10,13 @@
 .logout-logo {
   position: absolute;
   right: 0;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+  color: #333;
+}
+
+.logout-logo:hover {
+  color: #70b5db;
 }
 
 .sidebar-header-wrapper {

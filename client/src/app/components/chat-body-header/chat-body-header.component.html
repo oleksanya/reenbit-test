@@ -1,5 +1,5 @@
 <div class="chat-header">
-  <app-profile-img></app-profile-img>
+  <app-profile-img [profileImg]="receiverUserPhoto()"></app-profile-img>
 
-  <h2 class="chat-name">Test User</h2>
+  <h2 class="chat-name">{{ receiverData()?.firstName }}</h2>
 </div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-profile-img',
@@ -7,4 +7,7 @@ import { Component } from '@angular/core';
   templateUrl: './profile-img.component.html',
   styleUrl: './profile-img.component.css',
 })
-export class ProfileImgComponent {}
+export class ProfileImgComponent {
+  profileImg = input<string>();
+
+}

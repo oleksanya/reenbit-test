@@ -1,17 +1,42 @@
 <div class="chat-list-item-wrapper" (click)="clickDialog()">
   <div class="item-user-profile">
-    <app-profile-img></app-profile-img>
+    <app-profile-img [profileImg]="receiverUserPhoto"></app-profile-img>
   </div>
 
   <div class="item-message">
-    <h2 class="item-name">Test User</h2>
-
+    <h2 class="item-name">{{ receiverId.firstName + ' ' + receiverId.secondName }}</h2>
     <div>
-      <p class="item-text">Very informative last message</p>
+      @if(this.localChat()?.lastMessage) {
+        <p class="item-text" [class.bot-message]="isLastMessageFromBot()">
+          {{ localChat()?.lastMessage?.content }}
+        </p>
+      } @else {
+        <p class="item-text">Text me your first message!</p>
+      }
     </div>
   </div>
 
-  <div class="item-time">
-    <span class="time">Aug 18, 2022</span>
+  <div class="item-actions">
+    <div class="item-time">
+      <span class="time">{{ localChat()?.lastMessage?.createdAt | date:'shortTime' }}</span>
+    </div>
+    <div class="action-buttons">
+      <button 
+        class="edit-btn"
+        (click)="showEditDialog($event)"
+        [disabled]="isDeleting"
+      >
+        <span class="material-symbols-outlined">edit</span>
+      </button>
+      <button 
+        class="delete-btn" 
+        (click)="deleteChat($event)"
+        [disabled]="isDeleting"
+      >
+        <span class="material-symbols-outlined">delete</span>
+      </button>
+    </div>
   </div>
 </div>
+
+<app-edit-chat-dialog #editDialog></app-edit-chat-dialog>

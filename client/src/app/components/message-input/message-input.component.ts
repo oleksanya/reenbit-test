@@ -1,25 +1,48 @@
-import { Component } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
+import { MessageService } from '../../services/message.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-message-input',
   standalone: true,
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './message-input.component.html',
   styleUrl: './message-input.component.css',
 })
 export class MessageInputComponent {
+  userId = input<string>();
+  chatId = input<string>();
+  messageText: string = '';
+  messageService  = inject(MessageService);
+  
+  constructor() {}
+
   send() {
-    console.log('future send message');
-    //clear input
-    const input = document.querySelector('input');
-    if (input) {
-      input.value = '';
+    if (!this.messageText?.trim()) return;
+    
+    const userId = this.userId();
+    const chatId = this.chatId();
+    
+    if (userId && chatId) {
+      this.messageService.sendMessage(
+        userId,
+        chatId,
+        this.messageText.trim()
+      ).subscribe({
+        next: (response) => {
+          this.messageText = '';
+        },
+        error: (error) => {
+          console.error('Error sending message:', error);
+        }
+      });
     }
   }
 
-  handSubmit(event: { keyCode: number }) {
-    if (event.keyCode === 13) {
-      console.log('future submit message');
+  handSubmit(event: KeyboardEvent) {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      this.send();
     }
   }
 }

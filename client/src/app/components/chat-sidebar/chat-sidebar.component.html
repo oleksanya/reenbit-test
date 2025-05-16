@@ -1,5 +1,18 @@
 <aside class="sidebar-wrapper">
-  <app-sidebar-header></app-sidebar-header>
+  <app-sidebar-header 
+    [user]="user()"
+    (searchChange)="handleSearch($event)"
+  ></app-sidebar-header>
 
-  <app-chat-list></app-chat-list>
+  <app-chat-list 
+    [chats]="filteredChats()"
+    (chatSelected)="onChatSelect($event)"
+  ></app-chat-list>
+
+  <button class="create-chat-btn" (click)="showCreateChatDialog()">
+    <span class="material-symbols-outlined">add</span>
+    Create Chat
+  </button>
+
+  <app-create-chat-dialog #createChatDialog></app-create-chat-dialog>
 </aside>

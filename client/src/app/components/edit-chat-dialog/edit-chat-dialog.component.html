@@ -1,0 +1,49 @@
+<dialog class="dialog-wrapper" #dialog>
+  <div class="dialog-content">
+    <h2>Edit Chat</h2>
+    
+    <form class="dialog-form" (submit)="$event.preventDefault(); save()">
+      <div class="form-group">
+        <input
+          type="text"
+          [(ngModel)]="firstName"
+          name="firstName"
+          placeholder="First Name"
+          [disabled]="isUpdating"
+        />
+      </div>
+
+      <div class="form-group">
+        <input
+          type="text"
+          [(ngModel)]="secondName"
+          name="secondName"
+          placeholder="Second Name"
+          [disabled]="isUpdating"
+        />
+      </div>
+
+      @if (error) {
+        <div class="error-message">{{ error }}</div>
+      }
+
+      <div class="dialog-actions">
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="close()"
+          [disabled]="isUpdating"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="save-btn"
+          [disabled]="isUpdating"
+        >
+          {{ isUpdating ? 'Saving...' : 'Save' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>

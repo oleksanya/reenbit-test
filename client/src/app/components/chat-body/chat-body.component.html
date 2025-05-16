@@ -1,9 +1,28 @@
 <div class="chat-body-wrapper">
-  <app-chat-body-header></app-chat-body-header>
+  @if(chatData()) {
+    <app-chat-body-header [receiverData]="receiverData()"></app-chat-body-header>
+  }
+  @else {    
+    <div class="chat-header"> </div>
 
-  <div class="messages-container">
-    <app-messages-container></app-messages-container>
-  </div>
+    <div class="select-chat-message">
+      <p>Select a chat to start messaging</p>
+    </div>
+  } 
 
-  <app-message-input></app-message-input>
+  @if(chatData()) {
+    <div #messagesContainer class="messages-container">
+      <app-messages-container 
+        [messages]="messages()"
+        [userId]="user()?._id || ''"
+        [receiverData]="receiverData()!"
+        [chatId]="chatData()?._id || ''"
+      ></app-messages-container>
+    </div>
+
+    <app-message-input 
+      [userId]="user()?._id || ''"
+      [chatId]="chatData()?._id || ''"
+    ></app-message-input>
+  }
 </div>
