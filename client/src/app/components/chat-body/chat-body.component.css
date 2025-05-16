@@ -10,6 +10,7 @@
 .messages-container {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   max-height: calc(100vh - 9.375rem);
   scroll-behavior: smooth;
 }
