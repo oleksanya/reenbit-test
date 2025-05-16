@@ -6,6 +6,7 @@ import { User } from '../../interfaces/user';
 import { UserService } from '../../services/user.service';
 import { ChatService } from '../../services/chat.service';
 import { Chat } from '../../interfaces/chat';
+import { SocketService } from '../../services/socket.service';
 
 @Component({
   selector: 'app-chat-container',
@@ -22,9 +23,21 @@ export class ChatContainerComponent implements OnInit{
   selectedChatId: string  = '';
   selectedChatData?: Chat;
 
-
+  private socketService = inject(SocketService); 
   private userService = inject(UserService);
   private chatService = inject(ChatService);
+
+  constructor() {
+      setTimeout(() => {
+        this.initializeSocket();
+      }, 500);
+
+      window.addEventListener('storage', (event) => {
+        if (event.key === 'jwtToken') {
+          this.initializeSocket();
+        }
+    });
+  }
 
   ngOnInit(): void {
     this.loadUserData();
@@ -79,5 +92,19 @@ export class ChatContainerComponent implements OnInit{
       },
       error: (error) => console.error('Failed to fetch chat data:', error)
     });
+  }
+
+  private initializeSocket(): void {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+      this.socketService.disconnect(); // Ensure clean state
+      this.socketService.connect(token);
+    } else {
+      console.error('No token found, not connecting socket');
+    }
+  }
+
+    ngOnDestroy(): void {
+    this.socketService.disconnect();
   }
 }
