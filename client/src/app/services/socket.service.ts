@@ -17,9 +17,16 @@ export class SocketService {
   private userTypingSubject = new Subject<{userId: string, chatId: string}>();
 
   constructor() {
-    this.socket = io('http://localhost:2000', {
+    // Use relative URL for Socket.io to automatically connect to the current domain in production
+    // This will use the same host as the page in production, or localhost:2000 in development
+    const socketUrl = window.location.hostname === 'localhost' 
+      ? 'http://localhost:2000'
+      : '';
+      
+    this.socket = io(socketUrl, {
       withCredentials: true,
-      autoConnect: false
+      autoConnect: false,
+      path: '/socket.io'
     });
   }
 
