@@ -75,7 +75,6 @@ export class ChatContainerComponent implements OnInit{
   getSelectedChatData(chatId: string): void {
     this.chatService.getChatById(chatId).subscribe({
       next: (response) => {
-        console.log('Selected chat data with messages:', response.chat);
         this.selectedChatData = response.chat;
       },
       error: (error) => console.error('Failed to fetch chat data:', error)
