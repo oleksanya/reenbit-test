@@ -36,8 +36,13 @@ const indexPath = path.join(clientPath, 'index.html');
 // Serve static files
 app.use(express.static(clientPath));
 
-// All other routes return the index.html file
-app.get('*', (req, res) => {
+// Handle Angular routes - be more specific than '*' to avoid path-to-regexp issues
+app.get('/', (req, res) => {
+  res.sendFile(indexPath);
+});
+
+// Specific route for Angular app routes
+app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(indexPath);
 });
 
