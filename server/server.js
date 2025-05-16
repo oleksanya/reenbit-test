@@ -14,7 +14,10 @@ const app = express();
 
 app.use(
   cors({
-    origin: 'http://localhost:4200',
+    origin: process.env.NODE_ENV === 'production' 
+      ? true // Allow requests from any origin in production
+      : 'http://localhost:4200', // Only from this origin in development
+    credentials: true
   })
 );
 
@@ -26,9 +29,16 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 
-app.use(express.static(path.join(__dirname, '../client/dist/client')));
+// Handle client paths consistently
+const clientPath = path.join(__dirname, '../client/dist/client');
+const indexPath = path.join(clientPath, 'index.html');
+
+// Serve static files
+app.use(express.static(clientPath));
+
+// All other routes return the index.html file
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
+  res.sendFile(indexPath);
 });
 
 mongoose
