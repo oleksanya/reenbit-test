@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const path = require('path');
 
 const cors = require('cors');
 
@@ -16,6 +17,7 @@ app.use(
     origin: 'http://localhost:4200',
   })
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -23,6 +25,11 @@ app.use('/api/chats', chatRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
+
+app.use(express.static(path.join(__dirname, '../client/dist/client')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/client/browser/index.html'));
+});
 
 mongoose
   .connect(process.env.MONGODB_URI)
